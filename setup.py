@@ -18,6 +18,7 @@ setup(
     author_email = 'bugs@constellationapps.org',
     install_requires=[
         'constellation_base',
+        'netaddr',
     ],
     classifiers =[
         'Environment :: Web Environment',
