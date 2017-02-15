@@ -1,13 +1,33 @@
+import netaddr
+
 from django.shortcuts import render
 from django.shortcuts import get_object_or_404
 from django.http import HttpResponse
 from django.http import HttpResponseBadRequest
 from django.contrib.auth.models import User
 from django.core import serializers
+from django.contrib.auth.decorators import login_required
 
-import netaddr
+from constellation_base.models import GlobalTemplateSettings
+
+from .forms import DeviceForm
 
 from .models import Device
+
+@login_required
+def view_show_user(request):
+    '''Return the base template that will call the API to display
+    the '''
+    template_settings_object = GlobalTemplateSettings(allowBackground=False)
+    template_settings = template_settings_object.settings_dict()
+    form = DeviceForm(initial={"owner": request.user.username})
+    username = request.user.username
+
+    return render(request, 'constellation_devicemanager/view-list.html', {
+        'template_settings': template_settings,
+        'form': form,
+        'username': username,
+    })
 
 def api_v1_device_add(request):
     deviceForm = DeviceForm(request.POST or none)
@@ -25,7 +45,7 @@ def api_v1_device_add(request):
             # We define this inline so that we get nice macs out
             class MACCustomFormat(netaddr.mac_unix):
                 word_fmt = '%.2X'
-            mac = netaddr.EUI(netdata.deviceForm.cleaned_data['mac'],
+            mac = netaddr.EUI(deviceForm.cleaned_data['MAC'],
                               dialect=MACCustomFormat)
         except netaddr.core.AddrFormatError as e:
             return HttpResponseBadRequest("Bad address format")
@@ -34,14 +54,18 @@ def api_v1_device_add(request):
         # authorized to add it, lets go ahead and construct the object
         newDevice = Device()
         newDevice.MAC = str(mac)
-        if request.user == User.objects.get(username = deviceForm.cleaned_data['owner']):
-            
+
+        newDevice.name = deviceForm.cleaned_data['name']
+
+        if request.user == User.objects.get(username=deviceForm.cleaned_data['owner']):
             newDevice.owner = request.user
         else:
-            newDevice.owner = User.objects.get(username = deviceForm.cleaned_data['owner'])
+            newDevice.owner = User.objects.get(username=deviceForm.cleaned_data['owner'])
 
         newDevice.save()
         return HttpResponse("Device saved successfully")
+    else:
+        return HttpResponseBadRequest("Invalid Form Data")
 
 def api_v1_device_delete(request, deviceMAC):
     device = get_object_or_404(Device, pk=deviceMAC)
