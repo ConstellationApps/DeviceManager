@@ -29,6 +29,12 @@ def view_show_user(request):
         'username': username,
     })
 
+@login_required
+def view_dashboard(request):
+    '''Return a card that will appear on the main dashboard'''
+
+    return render(request, 'constellation_devicemanager/dashboard.html')
+
 def api_v1_device_add(request):
     deviceForm = DeviceForm(request.POST or none)
     if (request.POST and
