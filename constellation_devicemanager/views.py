@@ -1,4 +1,5 @@
 import netaddr
+import json
 
 from django.shortcuts import render
 from django.shortcuts import get_object_or_404
@@ -85,5 +86,11 @@ def api_v1_device_show_user(request, owner):
 
 def api_v1_device_show_all(request):
     devices = Device.objects.all()
-    devicesJSON = serializers.serialize("json", devices)
-    return HttpResponse(devicesJSON)
+    deviceList =[]
+    for device in devices:
+        d = {}
+        d["MAC"] = device.MAC
+        d["owner"] = device.owner.username
+        d["name"] = device.name
+        deviceList.append(d)
+    return HttpResponse(json.dumps(deviceList))
