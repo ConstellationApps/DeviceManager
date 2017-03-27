@@ -40,11 +40,11 @@ def view_dashboard(request):
 
 
 def api_v1_device_add(request):
-    deviceForm = DeviceForm(request.POST or none)
+    deviceForm = DeviceForm(request.POST or None)
     if (request.POST and
         deviceForm.is_valid() and (
             request.user == deviceForm.cleaned_data['owner'] or
-            request.user.is_staff())):
+            request.user.is_staff)):
         # only do things if the form checks out.  The 'owner' value
         # must either match that of the user that is submitting the
         # form, or the form must be submitted by a user that has the
