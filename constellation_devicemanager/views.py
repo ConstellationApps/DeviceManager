@@ -20,7 +20,7 @@ def view_show_user(request):
     the '''
     template_settings_object = GlobalTemplateSettings(allowBackground=False)
     template_settings = template_settings_object.settings_dict()
-    form = DeviceForm(initial={"owner": request.user.username})
+    form = DeviceForm(initial={"owner": request.user})
     username = request.user.username
 
     return render(request, 'constellation_devicemanager/view-list.html', {
