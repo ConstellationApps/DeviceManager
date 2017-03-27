@@ -8,6 +8,7 @@ from django.http import HttpResponseBadRequest
 from django.contrib.auth.models import User
 from django.core import serializers
 from django.contrib.auth.decorators import login_required
+from django.core.exceptions import ValidationError
 
 from constellation_base.models import GlobalTemplateSettings
 
@@ -73,6 +74,10 @@ def api_v1_device_add(request):
         else:
             newDevice.owner = User.objects.get(username=deviceForm.cleaned_data['owner'])
 
+        try:
+            newDevice.clean()
+        except ValidationError:
+            return HttpResponseBadRequest("Invalid Form Data")
         newDevice.save()
         return HttpResponse("Device saved successfully")
     else:

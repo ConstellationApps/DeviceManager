@@ -18,7 +18,7 @@ def validate_mac(value):
 
 def validate_hostname(value):
     if not re.match(hostname, value):
-        return ValidationError(
+        raise ValidationError(
             ('%(value) is not a valid hostname'),
             params={'value': value},
         )
