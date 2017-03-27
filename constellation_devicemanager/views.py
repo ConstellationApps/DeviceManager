@@ -66,6 +66,7 @@ def api_v1_device_add(request):
         newDevice.MAC = str(mac)
 
         newDevice.name = deviceForm.cleaned_data['name']
+        newDevice.hostname = deviceForm.cleaned_data['hostname']
 
         if request.user == User.objects.get(username=deviceForm.cleaned_data['owner']):
             newDevice.owner = request.user

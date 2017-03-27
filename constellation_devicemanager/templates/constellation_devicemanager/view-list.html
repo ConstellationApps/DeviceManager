@@ -71,7 +71,11 @@
             </div>
             <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label mdl-cell--12-col mdl-cell--bottom">
                 {{ form.name }}
-                <label class="mdl-textfield__label" for="{{ form.name.id_for_label }}">Device Name</label>
+                <label class="mdl-textfield__label" for="{{ form.name.id_for_label }}">Device Friendly Name</label>
+            </div>
+            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label mdl-cell--12-col mdl-cell--bottom">
+                {{ form.hostname }}
+                <label class="mdl-textfield__label" for="{{ form.name.id_for_label }}">Device Hostname</label>
             </div>
             <div class="mdl-card__actions">
               <div class="mdl-layout-spacer"></div>

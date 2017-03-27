@@ -9,4 +9,4 @@ class DeviceForm(ModelForm):
             field.widget.attrs['class'] = 'mdl-textfield__input'
     class Meta:
         model = Device
-        fields = ['MAC', 'name', 'owner']
+        fields = ['MAC', 'name', 'owner', 'hostname']
