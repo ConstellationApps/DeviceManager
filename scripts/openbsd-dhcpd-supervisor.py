@@ -41,7 +41,7 @@ def templateMacs(macs, fpath):
         logging.warning("Couldn't load old configuration file")
 
     # This line has to be long to avoid a Jinja2 Template error
-    templateStr = "{% for device in devices %}host {{ device.hostname }} { hardware ethernet {{ device.MAC }}; } # Device: {{ device.name }}; Owned By: {{ device.owner}}\n{% endfor %}" # noqa 401
+    templateStr = "{% for device in devices %}host {{ device.hostname }} { hardware ethernet {{ device.MAC }}; } # Device: '{{ device.name }}'; Owned By: {{ device.owner}}\n{% endfor %}" # noqa 401
 
     template = Template(templateStr)
     conf = template.render({"devices": macs})
