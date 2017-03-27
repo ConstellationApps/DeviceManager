@@ -15,6 +15,7 @@ from .forms import DeviceForm
 
 from .models import Device
 
+
 @login_required
 def view_show_user(request):
     '''Return the base template that will call the API to display
@@ -30,11 +31,13 @@ def view_show_user(request):
         'username': username,
     })
 
+
 @login_required
 def view_dashboard(request):
     '''Return a card that will appear on the main dashboard'''
 
     return render(request, 'constellation_devicemanager/dashboard.html')
+
 
 def api_v1_device_add(request):
     deviceForm = DeviceForm(request.POST or none)
@@ -74,23 +77,27 @@ def api_v1_device_add(request):
     else:
         return HttpResponseBadRequest("Invalid Form Data")
 
+
 def api_v1_device_delete(request, deviceMAC):
     device = get_object_or_404(Device, pk=deviceMAC)
     device.delete()
     return HttpResponse("{0} was deleted".format(deviceMAC))
 
+
 def api_v1_device_show_user(request, owner):
-    devices = Device.objects.filter(owner = User.objects.get(username = owner))
+    devices = Device.objects.filter(owner=User.objects.get(username=owner))
     devicesJSON = serializers.serialize("json", devices)
     return HttpResponse(devicesJSON)
 
+
 def api_v1_device_show_all(request):
     devices = Device.objects.all()
-    deviceList =[]
+    deviceList = []
     for device in devices:
         d = {}
         d["MAC"] = device.MAC
         d["owner"] = device.owner.username
         d["name"] = device.name
+        d["hostname"] = device.hostname
         deviceList.append(d)
     return HttpResponse(json.dumps(deviceList))
