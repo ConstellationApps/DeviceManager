@@ -13,9 +13,9 @@
 <script src="{% static 'constellation_devicemanager/js/view-list.js' %}"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.5/handlebars.min.js"></script>
 <script>
-    var url_api_v1_device_add = "{% url 'api_v1_device_add' %}"
-    var url_api_v1_device_delete = "{% url 'api_v1_device_delete' '00:00:00:00:00:00' %}"
-    var url_api_v1_device_show_user = "{% url 'api_v1_device_show_user' 0 %}"
+    var url_api_v1_device_add = "{% url 'constellation_devicemanager:api_v1_device_add' %}"
+    var url_api_v1_device_delete = "{% url 'constellation_devicemanager:api_v1_device_delete' '00:00:00:00:00:00' %}"
+    var url_api_v1_device_show_user = "{% url 'constellation_devicemanager:api_v1_device_show_user' 0 %}"
     var username = "{{ username }}"
 </script>
 {% endblock %}
@@ -55,7 +55,7 @@
         <h2 class="mdl-card__title-text">New Device</h2>
     </div>
     <div class="mdl-card__supporting-text">
-        <form method="post" action="{% url 'api_v1_device_add' %}" id="newDeviceForm" class="mdl-cell--2-offset-desktop mdl-cell--8-col">
+        <form method="post" action="{% url 'constellation_devicemanager:api_v1_device_add' %}" id="newDeviceForm" class="mdl-cell--2-offset-desktop mdl-cell--8-col">
             {% csrf_token %}
             {% if request.user.is_staff %}
             <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label mdl-cell--12-col mdl-cell--bottom">

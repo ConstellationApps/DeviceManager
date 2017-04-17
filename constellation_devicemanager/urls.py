@@ -2,6 +2,7 @@ from django.conf.urls import url
 
 from . import views
 
+app_name = 'constellation_devicemanager'
 urlpatterns = [
     url(r'^view/user$', views.view_show_user,
         name="view_show_user"),
