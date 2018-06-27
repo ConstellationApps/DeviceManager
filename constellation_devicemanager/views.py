@@ -9,6 +9,7 @@ from django.contrib.auth.models import User
 from django.core import serializers
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ValidationError
+from django.conf import settings
 
 from constellation_base.models import GlobalTemplateSettings
 
@@ -40,6 +41,7 @@ def view_dashboard(request):
     return render(request, 'constellation_devicemanager/dashboard.html')
 
 
+@login_required
 def api_v1_device_add(request):
     deviceForm = DeviceForm(request.POST or None)
     if (request.POST and
@@ -84,26 +86,34 @@ def api_v1_device_add(request):
         return HttpResponseBadRequest("Invalid Form Data")
 
 
+@login_required
 def api_v1_device_delete(request, deviceMAC):
     device = get_object_or_404(Device, pk=deviceMAC)
-    device.delete()
-    return HttpResponse("{0} was deleted".format(deviceMAC))
+    if (request.user == device.owner or request.user.is_staff):
+        device.delete()
+        return HttpResponse("{0} was deleted".format(deviceMAC))
+    else:
+        return HttpResponseBadRequest("Not authorized to delete device")
 
 
+@login_required
 def api_v1_device_show_user(request, owner):
     devices = Device.objects.filter(owner=User.objects.get(username=owner))
     devicesJSON = serializers.serialize("json", devices)
     return HttpResponse(devicesJSON)
 
 
-def api_v1_device_show_all(request):
-    devices = Device.objects.all()
-    deviceList = []
-    for device in devices:
-        d = {}
-        d["MAC"] = device.MAC
-        d["owner"] = device.owner.username
-        d["name"] = device.name
-        d["hostname"] = device.hostname
-        deviceList.append(d)
-    return HttpResponse(json.dumps(deviceList))
+def api_v1_device_show_all(request, key):
+    if (settings.SHOW_ALL_DEVICES == key):
+        devices = Device.objects.all()
+        deviceList = []
+        for device in devices:
+            d = {}
+            d["MAC"] = device.MAC
+            d["owner"] = device.owner.username
+            d["name"] = device.name
+            d["hostname"] = device.hostname
+            deviceList.append(d)
+        return HttpResponse(json.dumps(deviceList))
+    else:
+        return HttpResponseBadRequest("Not authorized to view all devices")
